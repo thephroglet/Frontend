@@ -1,0 +1,10 @@
+a {
+    display: inline-block;
+    position: relative;
+  }
+  a .icons {
+    position: absolute;
+    right: 0;
+    top: absolute;
+    line-height: 0;
+  }

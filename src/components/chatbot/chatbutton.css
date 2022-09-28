@@ -1,0 +1,7 @@
+.fixedButtonChat{
+    position: fixed;
+    z-index: 99;
+    bottom: 35px;
+    left: 0px; 
+    padding: 20px;
+}

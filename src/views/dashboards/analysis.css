@@ -1,0 +1,7 @@
+.fixedButton{
+    position: fixed;
+    z-index: 99;
+    bottom: 0px;
+    right: 0px; 
+    padding: 20px;
+}

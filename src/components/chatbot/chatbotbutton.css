@@ -1,0 +1,7 @@
+.fixedButtonBot{
+    position: fixed;
+    z-index: 99;
+    bottom: 0px;
+    left: 0px; 
+    padding: 20px;
+}
