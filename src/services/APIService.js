@@ -10,7 +10,7 @@ export default class APIService {
         this.axios = axios
         this.axios.defaults.baseURL = this.base_url
         this.axios.defaults.headers = {
-            token : authService.getCurrentUser().token
+            token : authService.getCurrentUser()?.token
         }
     }
 

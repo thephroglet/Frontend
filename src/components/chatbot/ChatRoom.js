@@ -160,7 +160,7 @@ const ChatRoom = () => {
                 <div className="col h-100">
                     <ChatView sendMessage={sendMessage} chat={{
                         name: 'CHATROOM',
-                        thumb: "/img/profile/" + UserService.getProfileData().avatar,
+                        thumb: "/img/icons/chat.jpg",
                         messages: publicChats.filter(message => message.status === 'MESSAGE').map(message => {
                             const date = message.date || new Date()
                             return {

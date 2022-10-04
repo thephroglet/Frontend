@@ -6,7 +6,6 @@ import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { blogService } from 'services';
 import UserService from 'services/UserService';
 
-
 class PostFileUpload extends Component {
 
     constructor(props) {
@@ -85,6 +84,9 @@ class PostFileUpload extends Component {
                 </Col>
                 </Row>
         </Card>
+       
+        
+      
       );
     }
   }

@@ -28,12 +28,12 @@ const SortableStore = () => {
       className="list-group"
       store={{
         get: (sortable) => {
-          const order = localStorage.getItem(sortable.options.group.name);
+          const order = sessionStorage.getItem(sortable.options.group.name);
           return order ? order.split('|') : [];
         },
         set: (sortable) => {
           const order = sortable.toArray();
-          localStorage.setItem(sortable.options.group.name, order.join('|'));
+          sessionStorage.setItem(sortable.options.group.name, order.join('|'));
         },
       }}
     >

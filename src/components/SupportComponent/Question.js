@@ -14,9 +14,9 @@ class Question extends Component {
       super(props)
       this.state = {
         content: null,
-        category: SupportCategory.TECHNICAL,
+        category: SupportCategory.help,
         status: SupportStatus.OPEN,
-        Avatar : UserService.getProfileData() != null && UserService.getProfileData().avatar != undefined ? UserService.getProfileData().avatar : "31.png"    
+        Avatar : UserService.getProfileData() != null && UserService.getProfileData()?.avatar != undefined ? UserService.getProfileData()?.avatar : "31.png"    
       }
     }
 
@@ -62,14 +62,23 @@ class Question extends Component {
               <Col xl="11">
               <NavLink to="#">{UserService.getProfileData()?.fname + " " + UserService.getProfileData()?.lname}</NavLink>
               <DropdownButton size="sm" as={ButtonGroup} title={`${this.state.category}`} variant="outline-primary" className="mb-1" onChange={this.onCategoryChange}>
-                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.TECHNICAL)}>
-                      {SupportCategory.TECHNICAL}
+                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.help)}>
+                      {SupportCategory.help}
                       </Dropdown.Item>
-                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.REPORT)}>
-                      {SupportCategory.REPORT}
+                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.report)}>
+                      {SupportCategory.report}
                       </Dropdown.Item>
-                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.CLAIM)}>
-                      {SupportCategory.CLAIM}
+                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.trust)}>
+                      {SupportCategory.trust}
+                      </Dropdown.Item>
+                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.hack)}>
+                      {SupportCategory.hack}
+                      </Dropdown.Item>
+                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.billing)}>
+                      {SupportCategory.billing}
+                      </Dropdown.Item>
+                      <Dropdown.Item action onClick={() => this.onCategoryChange(SupportCategory.program)}>
+                      {SupportCategory.program}
                       </Dropdown.Item>
                     </DropdownButton>
                 <Col xs={20}>
@@ -82,8 +91,6 @@ class Question extends Component {
               
                 </Row>
                 </Card>
-            
- 
       );
     }
   }

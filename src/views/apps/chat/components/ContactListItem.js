@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const ContactListItem = ({ item }) => {
   const dispatch = useDispatch();
-  const { id, name = 'Jane Doe', thumb = '', last = 'Tuesday 12:20', status = 'Offline', unread = 0 } = item;
+  const { id, name = 'Jane Doe', thumb = '', last = '', status = 'Offline', unread = 0 } = item;
   // const { selectedChat } = useSelector((state) => state.chat);
 
   const onContactClick = () => {

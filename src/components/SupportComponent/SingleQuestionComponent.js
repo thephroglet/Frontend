@@ -10,6 +10,7 @@ import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { supportService } from 'services'
 import SupportCategory from './SupportCategory';
 import UserService from 'services/UserService';
+import NewSupport from 'views/blocks/steps/NewSupport';
 
 class SingleQuestionComponent extends React.Component {
 
@@ -74,9 +75,10 @@ class SingleQuestionComponent extends React.Component {
     })
   }
 
+  /*
   refreshPage = ()=>{
     window.location.reload();
- }
+ }*/
 
   loadQuestion(){
     supportService.get(this.idQuestion).then(question => {
@@ -97,7 +99,7 @@ class SingleQuestionComponent extends React.Component {
     let question = null
     let status = null
     let answer = null
-
+    let newSupport = null
 
     const connected = authService.getCurrentUser()
     if (this.state.question){
@@ -118,7 +120,7 @@ class SingleQuestionComponent extends React.Component {
                <Form onSubmit={(event) => this.onSubmit(event)} >
                 <NavLink to="#">{authService.getCurrentUser()?.firstname + " " + authService.getCurrentUser()?.lastname}</NavLink>
                   <Form.Control as="textarea" placeholder="What's on your mind..." value={this.answercontent} onChange={(event) => (this.answercontent = event.target.value)} />
-                  <Button className="mt-2" size="sm" type="submit">ANSWER</Button>
+                  <Button className="mt-2" size="sm" type="submit">Reply</Button>
               </Form>
               </Col>
               </Row>
@@ -161,7 +163,7 @@ class SingleQuestionComponent extends React.Component {
 
      if (this.state.question) {
         let answercount = this.state.question.answers.length
-      const jdate = new Date(this.state.question.createdAt)
+        const jdate = new Date(this.state.question.createdAt)
         const date = jdate.toLocaleDateString();
         const time = jdate.toLocaleTimeString().slice(0, 5);
 
@@ -172,11 +174,11 @@ class SingleQuestionComponent extends React.Component {
          */
         
       question = (
-        <Card className="mb-5" body>
+        <Card className="mb-1" body>
                     <Row className="align-items-center">
                <Col xs="11">
               <div className="d-flex align-items-center">
-              <div className="sw-8 d-inline-block position-relative me-3">
+              <div className="sw-8 d-inline-block position-relative me-2">
         <img src={"/img/profile/"+this.state.userprofile.avatar} width="75" className="img-fluid rounded-xl" alt="thumb" />
       </div>
                 <div className="d-inline-block">
@@ -185,8 +187,8 @@ class SingleQuestionComponent extends React.Component {
                 
               </div>
             </Col>
-            <Col >
-            <Button variant="outline-primary" >{this.state.question.category}</Button>
+            <Col className="justify-content-end mx-0">
+            <Button size="sm" variant="outline-primary" >{this.state.question.category}</Button>
            {status}
             
             </Col>
@@ -212,6 +214,8 @@ class SingleQuestionComponent extends React.Component {
      }
 
      if (this.state.question) {
+      newSupport = <NewSupport answers={this.state.question.answers.reverse()} />
+      /*
       for( let index in this.state.question.answers){
         const answer = this.state.question.answers[index];
         const jdate = new Date(answer.createdAt)
@@ -239,6 +243,7 @@ class SingleQuestionComponent extends React.Component {
        </Card>
         ));
       }
+      */
      }
 
     return (
@@ -254,7 +259,7 @@ class SingleQuestionComponent extends React.Component {
               <ul/>
               <Row className="g-5">
         <Col xl="8" xxl="9" className="mb-5" />
-        { list }
+          { newSupport }
          </Row>
 
          {answer}

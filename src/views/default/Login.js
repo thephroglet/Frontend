@@ -27,7 +27,7 @@ const Login = (props) => {
           if(authService.getCurrentUser().role === 'USER') {
             props.history.push("/");
           }
-          else if(authService.getCurrentUser().role === 'ADMIN') {
+          else if(authService.getCurrentUser().role === 'ADMIN' || authService.getCurrentUser().role === 'SUPER_ADMIN') {
             props.history.push("/admin/dashboard");
           }
         location.reload();

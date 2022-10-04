@@ -43,6 +43,15 @@ const getUsers = () => {
     })
 }
 
+const getUsersByRole = () => {
+  const user = authService.getCurrentUser();
+  return axios.get(`${API_URL}/user/all`, {
+      headers: {
+          token : user.token
+      }
+  })
+}
+
 const LockUser = (id) => {
   const user = authService.getCurrentUser();
     return axios.put(`${API_URL}/user/lock`, null, {
@@ -97,6 +106,7 @@ export default {
     getProfileById,
     LoadProfile,
     getUsers,
+    getUsersByRole,
     LockUser,
     UnLockUser,
     isUserAdmin

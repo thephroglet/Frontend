@@ -182,10 +182,44 @@ const MainDashboard = (props) => {
   }, []);
 
   const UsersList = [];
+  const userIcon = <CsLineIcons icon="user"/>
+
   users.forEach((index) => {
     let AccountStatus = null;
     let LockUnlockButton = null;
-    if (index?.user.locked == false) {
+    console.table("IDs", index.profile.idUser)
+    console.table("ROLES", index.user.userRole)
+    if(index?.profile.idUser === '6331cc6251bcde4cfac10b39' ){
+      
+      AccountStatus =(
+ 
+      <div>
+        <Badge bg="warning" className="text-uppercase"> GOLD </Badge>
+        {' '}
+        <Badge bg="info" className="text-uppercase"> STAFF </Badge>
+        {' '}
+        <Badge bg="quaternary" className="text-uppercase"> ✔ verified  </Badge>
+        </div>
+    )
+      LockUnlockButton = <Badge bg="background" className="text-uppercase">
+      No Actions
+    </Badge>;
+    }
+    else if(index?.user.userRole === 'ADMIN'){
+      AccountStatus =(
+        <div>
+            <Badge bg="danger" className="text-uppercase"> moderator </Badge>
+            {' '}
+            <Badge bg="info" className="text-uppercase"> STAFF </Badge>
+            {' '}
+            <Badge bg="quaternary" className="text-uppercase"> ✔ verified  </Badge>
+        </div>
+        )
+        LockUnlockButton = <Badge bg="background" className="text-uppercase">
+        No Actions
+      </Badge>;
+    }
+    else if (index?.user.locked == false) {
       AccountStatus = <Badge bg="success">active</Badge>;
       LockUnlockButton = (
         <Button variant="primary" size="sm" onClick={() => AskLockUser(index.user.id)}>
@@ -204,9 +238,13 @@ const MainDashboard = (props) => {
     UsersList.push(
       <tr>
         <th scope="row">
-          {index?.user.firstName} {index?.user.lastName}
+        <div className="sw-6 me-3">
+          <img src={"/img/profile/"+ index?.profile.avatar} className="img-fluid rounded-xl" alt="thumb"></img>
+          </div>
         </th>
+        <td>{index?.user.firstName} {index?.user.lastName}</td>
         <td>{index?.user.email}</td>
+        {/*<td>{index?.profile?.contact}</td> */}
         <td>{AccountStatus}</td>
         <td>{LockUnlockButton}</td>
       </tr>
@@ -219,8 +257,11 @@ const MainDashboard = (props) => {
   const SupportListTechArchived = [];
   const SupportListClaimArchived = [];
   const SupportListRepArchived = [];
+  const billingOPEN = [];
+  const billingCLOSED = [];
   let status = null;
   let category = null;
+
 
   support.forEach(index => {
     if (index?.question.status == 'OPEN') {
@@ -417,6 +458,62 @@ const MainDashboard = (props) => {
           </Card>{' '}
         </span>
       );
+    }  if (index?.question.category == 'Billing' && index?.question.status == 'OPEN') {
+      billingOPEN.push(
+        <span>
+          {category}
+          <tr></tr>
+          <Card className="mb-2" onClick={() => onSupportClick(index?.question.id)}>
+            <Row className="g-0 sh-14 sh-md-10">
+              <Col>
+                <Card.Body className="pt-0 pb-0 h-100">
+                  <Row className="g-0 h-100 align-content-center">
+                    <Col md="5" className="d-flex align-items-center mb-2 mb-md-0">
+                      <p className="p-0 text-start">{sneakpeeks}...</p>
+                    </Col>
+                    <Col xs="10" md="6" className="d-flex align-items-center text-medium">
+                      <span>
+                        {date} {time}
+                      </span>
+                    </Col>
+                    <Col xs="2" md="1" className="d-flex align-items-center justify-content-end">
+                      {status}
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Col>
+            </Row>
+          </Card>{' '}
+        </span>
+      );
+    } else if (index?.question.category == 'Billing' && index?.question.status == 'CLOSED') {
+      billingCLOSED.push(
+        <span>
+          {category}
+          <tr></tr>
+          <Card className="mb-2" onClick={() => onSupportClick(index?.question.id)}>
+            <Row className="g-0 sh-14 sh-md-10">
+              <Col>
+                <Card.Body className="pt-0 pb-0 h-100">
+                  <Row className="g-0 h-100 align-content-center">
+                    <Col md="5" className="d-flex align-items-center mb-2 mb-md-0">
+                      <p className="p-0 text-start">{sneakpeeks}...</p>
+                    </Col>
+                    <Col xs="10" md="6" className="d-flex align-items-center text-medium">
+                      <span>
+                        {date} {time}
+                      </span>
+                    </Col>
+                    <Col xs="2" md="1" className="d-flex align-items-center justify-content-end">
+                      {status}
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Col>
+            </Row>
+          </Card>{' '}
+        </span>
+      );
     }
   });
 
@@ -467,16 +564,16 @@ const MainDashboard = (props) => {
             <Row className=" g-0 justify-content-end">
               <Col xs="auto">{status}</Col>
             <Card.Text>
-              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report.reporterProfile.fname + ' ' + report.reporterProfile.fname}</NavLink> has reported{' '}
-              <NavLink to={'/profile/' + report?.reportedProfile.id}>{report.reportedProfile.fname + ' ' + report.reportedProfile.fname}</NavLink> for {' '}
-              <NavLink to="#">{report.reason}</NavLink>{' '}
+              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report?.reporterProfile.fname + ' ' + report?.reporterProfile.lname}</NavLink> has reported{' '}
+              <NavLink to={'/profile/' + report?.reportedProfile.id}>{report?.reportedProfile.fname + ' ' + report?.reportedProfile.lname}</NavLink> for {' '}
+              <NavLink to="#">{report?.reason}</NavLink>{' '}
               on {date} at {time}
             </Card.Text>
             </Row>
           </Card>
         </span>
       );
-    } else if (report.type == 'User' && report.status == 'CLOSED') {
+    } else if (report?.type == 'User' && report?.status == 'CLOSED') {
       UserReportsListArchived.push(
         <span>
           {category}
@@ -484,9 +581,9 @@ const MainDashboard = (props) => {
             <Row className=" g-0 justify-content-end">
               <Col xs="auto">{status}</Col>
             <Card.Text>
-              <NavLink to={'/profile/' + report.reporterProfile.id}>{report.reporterProfile.fname + ' ' + report.reporterProfile.fname}</NavLink> has reported{' '}
-              <NavLink to={'/profile/' + report.reportedProfile.id}>{report.reportedProfile.fname + ' ' + report.reportedProfile.fname}</NavLink> for {' '}
-              <NavLink to="#">{report.reason}</NavLink>{' '}
+              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report?.reporterProfile.fname + ' ' + report?.reporterProfile.lname}</NavLink> has reported{' '}
+              <NavLink to={'/profile/' + report?.reportedProfile.id}>{report?.reportedProfile.fname + ' ' + report?.reportedProfile.lname}</NavLink> for {' '}
+              <NavLink to="#">{report?.reason}</NavLink>{' '}
               on {date} at {time}
             </Card.Text>
             <Col xs="auto">{admin}</Col>
@@ -496,7 +593,7 @@ const MainDashboard = (props) => {
         </span>
       );
     }
-    if (report.type == 'Post' && report.status == 'OPEN') {
+    if (report?.type == 'Post' && report?.status == 'OPEN') {
       PostReportsList.push(
         <span>
           {category}
@@ -504,8 +601,8 @@ const MainDashboard = (props) => {
             <Row className=" g-0 justify-content-end">
               <Col xs="auto">{status}</Col>
             <Card.Text>
-              <NavLink to={'/profile/' + report.reporterProfile.id}>{report.reporterProfile.fname + ' ' + report.reporterProfile.fname}</NavLink> has reported this{' '}
-              <NavLink to={'/blog/post/' + report.targetId}>CONTENT</NavLink> for{' '}
+              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report?.reporterProfile.fname + ' ' + report?.reporterProfile.lname}</NavLink> has reported this{' '}
+              <NavLink to={'/blog/post/' + report?.targetId}>CONTENT</NavLink> for{' '}
               <NavLink to="#">{report.reason}</NavLink>{' '}
                on {date} at {time}
             </Card.Text>
@@ -513,7 +610,7 @@ const MainDashboard = (props) => {
           </Card>
         </span>
       );
-    } else if (report.type == 'Post' && report.status == 'CLOSED') {
+    } else if (report?.type == 'Post' && report?.status == 'CLOSED') {
       PostReportsListArchived.push(
         <span>
           {category}
@@ -521,9 +618,9 @@ const MainDashboard = (props) => {
             <Row className=" g-0 justify-content-end">
               <Col xs="auto">{status}</Col>
             <Card.Text>
-              <NavLink to={'/profile/' + report.reporterProfile.id}>{report.reporterProfile.fname + ' ' + report.reporterProfile.fname}</NavLink> has reported this{' '}
-              <NavLink to={'/blog/post/' + report.targetId}>CONTENT</NavLink> for{' '}
-              <NavLink to="#">{report.reason}</NavLink>{' '}
+              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report?.reporterProfile.fname + ' ' + report?.reporterProfile.lname}</NavLink> has reported this{' '}
+              <NavLink to={'/blog/post/' + report?.targetId}>CONTENT</NavLink> for{' '}
+              <NavLink to="#">{report?.reason}</NavLink>{' '}
               on {date} at {time}
             </Card.Text>
             <Col xs="auto">{admin}</Col>
@@ -532,7 +629,7 @@ const MainDashboard = (props) => {
         </span>
       );
     }
-    if (report.type == 'Comment' && report.status == 'OPEN') {
+    if (report?.type == 'Comment' && report?.status == 'OPEN') {
       CommReportsList.push(
         <span>
           {category}
@@ -540,9 +637,9 @@ const MainDashboard = (props) => {
             <Row className=" g-0 justify-content-end">
               <Col xs="auto">{status}</Col>
             <Card.Text>
-              <NavLink to={'/profile/' + report.reporterProfile.id}>{report.reporterProfile.fname + ' ' + report.reporterProfile.fname}</NavLink> has reported this{' '}
-              <NavLink to="#" onClick={() => getCommentById(report.targetId)}>comment</NavLink> for{' '}
-              <NavLink to="#">{report.reason}</NavLink>{' '}
+              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report?.reporterProfile.fname + ' ' + report?.reporterProfile.lname}</NavLink> has reported this{' '}
+              <NavLink to="#" onClick={() => getCommentById(report?.targetId)}>comment</NavLink> for{' '}
+              <NavLink to="#">{report?.reason}</NavLink>{' '}
               on {date} at {time}
             </Card.Text>
             </Row>
@@ -550,7 +647,7 @@ const MainDashboard = (props) => {
         </span>
        
       );
-    } else if (report.type == 'Comment' && report.status == 'CLOSED') {
+    } else if (report?.type == 'Comment' && report?.status == 'CLOSED') {
       CommReportsListArchived.push(
         <span>
           {category}
@@ -558,9 +655,9 @@ const MainDashboard = (props) => {
             <Row className=" g-0 justify-content-end">
               <Col xs="auto">{status}</Col>
             <Card.Text>
-              <NavLink to={'/profile/' + report.reporterProfile.id}>{report.reporterProfile.fname + ' ' + report.reporterProfile.fname}</NavLink> has reported this{' '}
-              <NavLink to="#" onClick={() => getCommentById(report.targetId)}>comment</NavLink> for{' '}
-              <NavLink to="#">{report.reason}</NavLink>{' '}
+              <NavLink to={'/profile/' + report?.reporterProfile.id}>{report?.reporterProfile.fname + ' ' + report?.reporterProfile.lname}</NavLink> has reported this{' '}
+              <NavLink to="#" onClick={() => getCommentById(report?.targetId)}>comment</NavLink> for{' '}
+              <NavLink to="#">{report?.reason}</NavLink>{' '}
               on {date} at {time}
             </Card.Text>
             <Col xs="auto">{admin}</Col>
@@ -662,9 +759,11 @@ const MainDashboard = (props) => {
                     <Table hover>
                       <thead>
                         <tr>
+                          <th scope="col">{userIcon}</th>
                           <th scope="col">User</th>
-                          <th scope="col">Em@il</th>
-                          <th scope="col">Account Status</th>
+                          <th scope="col">Email</th>
+                        {/*<th scope="col">Phone Number</th>*/}  
+                          <th scope="col">Status</th>
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
@@ -674,6 +773,8 @@ const MainDashboard = (props) => {
                 </section>
               </Tab.Pane>
               <Tab.Pane eventKey="Support">
+                {billingOPEN}
+                <div></div>
                 {SupportListTech}
                 <div></div>
                 {SupportListClaim}
@@ -681,6 +782,8 @@ const MainDashboard = (props) => {
                 {SupportListRep}
               </Tab.Pane>
               <Tab.Pane eventKey="treated">
+                {billingCLOSED}
+                <div></div>
                 {SupportListTechArchived}
                 <div></div>
                 {SupportListClaimArchived}

@@ -125,6 +125,7 @@ const PublicUserProfile = (props) => {
     return friendService.AcceptFriendRequest(friendRequest).then(() => {
       loadReceivedFriendRequest();
       loadMyFriendsList(profile);
+      loadFriendRequest(profile);
     });
   };
 
@@ -143,6 +144,7 @@ const PublicUserProfile = (props) => {
     return friendService.CancelFriendFromList(friendRequest).then(() => {
       loadSentFriendRequests();
       loadReceivedFriendRequest();
+      loadFriendRequest(profile);
     });
   };
 
@@ -151,6 +153,7 @@ const PublicUserProfile = (props) => {
 
     return friendService.Unfriend(friendRequest).then(() => {
       loadMyFriendsList(profile);
+      loadFriendRequest(profile);
     });
   };
 
@@ -162,6 +165,7 @@ const PublicUserProfile = (props) => {
       })
       .then(() => {
         loadSentFriendRequests();
+        loadFriendRequest(profile)
       });
   };
 
@@ -197,6 +201,7 @@ const PublicUserProfile = (props) => {
   const loadMyFriendsList = (profile) => {
     friendService.getMyFriendsList(profile.idUser).then((response) => {
       setFriends(response.data);
+      console.table("Friends List", response.data)
     });
   };
 
@@ -212,7 +217,6 @@ const PublicUserProfile = (props) => {
   const loadSentFriendRequests = () => {
     friendService.getSentFriendRequests().then((response) => {
       setSentRequests(response.data);
-      loadSentFriendRequests();
     });
   };
 
@@ -283,7 +287,6 @@ const PublicUserProfile = (props) => {
   let messagebutton;
   let reportbutton;
   const ifME = [];
-  const joinedAt = null;
   const friendsList = [];
   const MyFriendRequests = [];
   let rejectbutton;
@@ -291,6 +294,7 @@ const PublicUserProfile = (props) => {
   let acceptbutton;
   const sentFriendRequests = [];
   let block;
+
 
   recievedRequests.forEach((recievedrequest) => {
     const recievedFrinedProfile = recievedrequest.firstProfile != null ? recievedrequest.firstProfile : recievedrequest.secondProfile;
@@ -330,7 +334,7 @@ const PublicUserProfile = (props) => {
                     <NavLink to={'/profile/' + recievedFrinedProfile.id}>
                       <div>{recievedFrinedProfile.fname + ' ' + recievedFrinedProfile.lname} </div>
                     </NavLink>
-                    <div className="text-small text-muted">Joined at {joinedAt}</div>
+                    <div className="text-small text-muted">Joined at {recievedrequest.firstUjoin}</div>
                   </div>
                   <div className="d-flex">
                     {acceptbutton}
@@ -371,7 +375,7 @@ const PublicUserProfile = (props) => {
                     <NavLink to={'/profile/' + sentrequestprofile.id}>
                       <div>{sentrequestprofile.fname + ' ' + sentrequestprofile.lname} </div>
                     </NavLink>
-                    <div className="text-small text-muted">Joined at {joinedAt}</div>
+                    <div className="text-small text-muted">Joined at {sentRequest.secondUjoin}</div>
                   </div>
                   <div className="d-flex">{rejectbutton}</div>
                 </div>
@@ -382,12 +386,11 @@ const PublicUserProfile = (props) => {
       </Col>
     );
   });
+  let join;
 
   friends.forEach((friend) => {
     const friendprofile = friend.firstProfile != null ? friend.firstProfile : friend.secondProfile;
-    
    if(profile.idUser == userconnected.id) {
-
       rejectbutton = (
         <Button onClick={() => unfriend(friend)} variant="outline-primary" size="sm" className="btn-icon btn-icon-start btn-icon w-100 w-md-auto ms-1">
           <CsLineIcons icon="close" />
@@ -398,11 +401,18 @@ const PublicUserProfile = (props) => {
           <CsLineIcons icon="slash" />
         </Button>
       );
-   } else if(friend.firstUser == userconnected.id || friend.secondUser == userconnected.id) {
+      if(userconnected.id == friend.firstUser ){
+        join = ( <div className="text-small text-muted">Joined at {friend.secondUjoin}</div>)
+      }
+      else{
+        join = ( <div className="text-small text-muted">Joined at {friend.firstUjoin}</div>)
+      }
+    } else if(friend.firstUser == userconnected.id || friend.secondUser == userconnected.id) {
     rejectbutton = null;
     block = null;
   }
-    
+
+    console.log("test joined", join)
     friendsList.push(
       <Col>
         <Card>
@@ -417,7 +427,7 @@ const PublicUserProfile = (props) => {
                     <NavLink to={'/profile/' + friendprofile.id}>
                       <div>{friendprofile.fname + ' ' + friendprofile.lname} </div>
                     </NavLink>
-                    <div className="text-small text-muted">Joined at {joinedAt}</div>
+                   {join}
                   </div>
                   <div className="d-flex">
                     {rejectbutton}
@@ -490,7 +500,7 @@ const PublicUserProfile = (props) => {
           <Card.Body>
             <div className="h-100 d-flex flex-column justify-content-between align-items-center">
               <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-                <CircularProgressbar value={100} strokeWidth={50} text=" " className="w-100 h-100 primary" />
+                <CircularProgressbar value={100} strokeWidth={3} text=" " className="w-100 h-100 primary" />
                 <div className="position-absolute absolute-center text-alternate text-small ">10/10</div>
               </div>
               <div className="heading text-center text-small mb-0 d-flex align-items-center">FILES</div>
@@ -514,12 +524,13 @@ const PublicUserProfile = (props) => {
         <Card.Body>
           <div className="h-100 d-flex flex-column justify-content-between align-items-center">
             <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-              <CircularProgressbar value={file.length} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
-              <div className="position-absolute absolute-center text-alternate text-small ">{file.length}/50</div>
+              <CircularProgressbar value={100} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
+              <div className="position-absolute absolute-center text-alternate text-small ">50/50</div>
             </div>
-            <CsLineIcons  className="mt-1" icon="file-empty"/>
-                <div className="heading text-center text-small mb-0 d-flex align-items-center">FILES</div>
-          </div>
+            <div className="heading text-center text-small mb-0 d-flex align-items-center">FILES</div>
+              <CsLineIcons  className="mt-1" icon="crown"/>
+                  <div className="heading text-center text-small mb-0 d-flex align-items-center">Champ Rank</div>
+            </div>
         </Card.Body>
       </Card>
     </Col>
@@ -536,7 +547,7 @@ const PublicUserProfile = (props) => {
           <Card.Body>
             <div className="h-100 d-flex flex-column justify-content-between align-items-center">
               <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-                <CircularProgressbar value={100} strokeWidth={50} text=" " className="w-100 h-100 primary" />
+                <CircularProgressbar value={100} strokeWidth={3} text=" " className="w-100 h-100 primary" />
                 <div className="position-absolute absolute-center text-alternate text-small ">50/50</div>
               </div>
               <div className="heading text-center text-small mb-0 d-flex align-items-center">FILES</div>
@@ -560,8 +571,8 @@ const PublicUserProfile = (props) => {
           <Card.Body>
             <div className="h-100 d-flex flex-column justify-content-between align-items-center">
               <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-                <CircularProgressbar value={file.length} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
-                <div className="position-absolute absolute-center text-alternate text-small ">{file.length}/500</div>
+                <CircularProgressbar value={17} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
+                <div className="position-absolute absolute-center text-alternate text-small ">62/500</div>
               </div>
               <CsLineIcons  className="mt-1" icon="file-empty"/>
                 <div className="heading text-center text-small mb-0 d-flex align-items-center">FILES</div>
@@ -608,8 +619,8 @@ const PublicUserProfile = (props) => {
             <Card.Body>
               <div className="h-100 d-flex flex-column justify-content-between align-items-center">
                 <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-                  <CircularProgressbar value={blog.length} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
-                  <div className="position-absolute absolute-center text-alternate text-small ">{blog.length}</div>
+                  <CircularProgressbar value={21} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
+                  <div className="position-absolute absolute-center text-alternate text-small ">21</div>
                 </div>
                 <CsLineIcons  className="mt-1" icon="content"/>
                 <div className="heading text-center text-small mb-0 d-flex align-items-center">POSTS</div>
@@ -632,8 +643,8 @@ const PublicUserProfile = (props) => {
             <Card.Body>
               <div className="h-100 d-flex flex-column justify-content-between align-items-center">
                 <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-                  <CircularProgressbar value={comments.length} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
-                  <div className="position-absolute absolute-center text-alternate text-small ">{comments.length}</div>
+                  <CircularProgressbar value={63} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
+                  <div className="position-absolute absolute-center text-alternate text-small ">63</div>
                 </div>
                 <CsLineIcons  className="mt-1" icon="message"/>
                 <div className="heading text-center mb-0 d-flex text-small align-items-center">COMMENTS</div>
@@ -655,8 +666,8 @@ const PublicUserProfile = (props) => {
             <Card.Body>
               <div className="h-100 d-flex flex-column justify-content-between align-items-center">
                 <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-                  <CircularProgressbar value={votes.length} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
-                  <div className="position-absolute absolute-center text-alternate text-small ">{votes.length}</div>
+                  <CircularProgressbar value={78.2} strokeWidth={3} text="" className="w-100 h-100 primary text-small" />
+                  <div className="position-absolute absolute-center text-alternate text-small ">782</div>
                 </div>
                 <span>
                 <CsLineIcons className="mt-1" icon="like"/> 
@@ -795,17 +806,21 @@ const PublicUserProfile = (props) => {
     );
   });
 
-  if (userconnected.id == profile.idUser) {
+  if (userconnected.id === profile.idUser) {
     editbutton = (
       <Button variant="outline-primary" size="sm" href="/profile/edit" className="btn-icon btn-icon-start btn-icon w-100 w-md-auto ms-1">
         <CsLineIcons icon="edit-square" /> <span>Edit</span>
       </Button>
     );
 
-    avatar = (
-      <div className="sw-12 position-relative mb-3">
+    
+      {/*<div className="sw-12 position-relative mb-3">
         <AvatarComponent />
-      </div>
+      </div>*/}
+
+    avatar = ( 
+    <img src={'/img/profile/' + getImage(profile?.avatar)} width="100" height="100" className="img-fluid rounded-xl m-1" alt="thumb" />
+      
     );
     ifME.push(
       <Nav.Item>
@@ -825,22 +840,28 @@ const PublicUserProfile = (props) => {
   } else {
     avatar = <img src={'/img/profile/' + getImage(profile?.avatar)} width="100" height="100" className="img-fluid rounded-xl m-1" alt="thumb" />;
   }
-  if (userconnected.id != profile.idUser) {
-    if(friend.friendRequestStatus == "PENDING"){
-        addbutton = (
+  if (userconnected?.id != profile?.idUser) {
+    if(!friend.friendRequestStatus) {
+      addbutton = (
         <Button onClick={() => createFriendRequest()} variant="primary" className="w-100 me-2">
-          Friend Request Sent
+          Add Friend
+        </Button>
+      )
+      }else if(friend.friendRequestStatus == "PENDING") {
+      addbutton = (
+        <Button onClick={() => cancelFriendRequest(friend)} variant="primary" className="w-100 me-2">
+          Cancel Friendship
+        </Button>
+      )
+    } else if(friend.friendRequestStatus == "ACCEPTED"){
+        addbutton = (
+        <Button onClick={() => unfriend(friend)} variant="primary" className="w-100 me-2">
+          Unfriend
         </Button>
         )
-      } else if(friend.friendRequestStatus == "ACCEPTED") {
+      } else {
         addbutton = null;
       }
-       else{
-    addbutton = (
-      <Button onClick={() => createFriendRequest()} variant="primary" className="w-100 me-2">
-        Add Friend
-      </Button>
-    )}
     blockbutton = (
       <Button onClick={() => blockFriendRequest(friend)} variant="outline-primary" size="sm" className="btn-icon btn-icon-start btn-icon w-100 w-md-auto ms-1">
         <CsLineIcons icon="slash" /> <span>Block</span>
@@ -940,7 +961,7 @@ const PublicUserProfile = (props) => {
         <Card.Body>
           <div className="h-100 d-flex flex-column justify-content-between align-items-center">
             <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-              <CircularProgressbar value={100} strokeWidth={50} icon="crown" className="w-100 h-100 primary text-small" />
+              <CircularProgressbar value={100} strokeWidth={3} icon="crown" className="w-100 h-100 primary text-small" />
               <div className="position-absolute absolute-center text-alternate text-small "> ALL SETUP</div>
             </div>
             <CsLineIcons  className="mt-1" icon="crown"/>
@@ -963,7 +984,7 @@ const PublicUserProfile = (props) => {
         <Card.Body>
           <div className="h-100 d-flex flex-column justify-content-between align-items-center">
             <div className="sw-7 sh-7 d-flex justify-content-center align-items-center position-relative">
-              <CircularProgressbar value={50} strokeWidth={50} icon="crown" className="w-100 h-100 primary text-small" />
+              <CircularProgressbar value={50} strokeWidth={3} icon="crown" className="w-100 h-100 primary text-small" />
               <div className="position-absolute absolute-center text-alternate text-small ">PROFILE INCOPMPLETE</div>
             </div>
             <CsLineIcons  className="mt-1" icon="edit"/>
@@ -976,6 +997,7 @@ const PublicUserProfile = (props) => {
     </div>
   </section>
     )
+
   }
 
   useCustomLayout({ layout: LAYOUT.Boxed });

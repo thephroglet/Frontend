@@ -25,7 +25,6 @@ class AvatarComponent extends React.Component{
     })
   }
 
-
   cancelAvatar(){
     this.setState({
       Avatar : this.getAvatar()

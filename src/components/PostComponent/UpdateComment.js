@@ -18,6 +18,7 @@ class UpdateComment extends Component {
     }
  
     onContentChange = event => {
+      event.preventDefault()
       this.setState({
         commentcontent: event.target.value
       });
@@ -47,10 +48,10 @@ class UpdateComment extends Component {
           </div>
         </Col>
     <Col>
-        <Form onSubmit={(event) => this.onSubmit(event)} >
+        <Form onSubmit={(event) => this.onContentChange(event)} >
         <NavLink to="#">{authService.getCurrentUser()?.firstname + " " + authService.getCurrentUser()?.lastname}</NavLink>
           <Form.Control as="textarea" value={this.state.commentcontent} onChange={this.onContentChange} />
-          <Button className="mt-2" size="sm" type="submit" onClick={this.onComment}>COMMENT</Button>
+          <Button className="mt-2" size="sm" type="submit" onClick={(event) => this.onComment(event)}>COMMENT</Button>
       </Form>
       </Col>
       </Row>

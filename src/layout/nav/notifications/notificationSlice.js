@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { SERVICE_URL } from 'config.js';
+import { friendService } from 'services';
 
 const initialState = {
   status: 'idle',
@@ -25,7 +26,7 @@ export const { notificationsLoading, notificationsLoaded } = notificationSlice.a
 
 export const fetchNotifications = () => async (dispatch) => {
   dispatch(notificationsLoading());
-  const response = await axios.get(`${SERVICE_URL}/notifications`);
+  const response = await friendService.getReceivedFriendRequests();
   dispatch(notificationsLoaded(response.data));
 };
 

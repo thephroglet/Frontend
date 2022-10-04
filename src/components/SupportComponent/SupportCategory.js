@@ -1,7 +1,10 @@
 class SupportCategory {
-    static TECHNICAL = "TECHNICAL"
-    static REPORT =  "REPORT"
-	static CLAIM = "CLAIM"
+    static help = "Help & Support"
+    static report =  "Bug Reporting"
+	static trust = "Trust & Safety"
+    static hack = "Hacked Account"
+    static billing = "Billing"
+    static program = "Community Programs"
 }
 
 export default SupportCategory

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
 
-const EditorBubble = () => {
+const EditorSnow = () => {
   const theme = 'snow';
   const modules = {
     toolbar: [
@@ -27,4 +27,4 @@ const EditorBubble = () => {
   return <div ref={quillRef} className="sh-19 html-editor" />;
 };
 
-export default EditorBubble;
+export default EditorSnow;

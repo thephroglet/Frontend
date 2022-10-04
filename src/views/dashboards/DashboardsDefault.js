@@ -31,7 +31,7 @@ const DashboardsDefault = () => {
     console.log("end", endDate)
     fileService.FilterByDate(startDate,endDate).then(file => {
       setFiles(file.data)
-        localStorage.setItem("files", file.data)
+        sessionStorage.setItem("files", file.data)
       })
     console.log(fileService.FilterByDate(startDate,endDate));
   }
@@ -39,7 +39,7 @@ const DashboardsDefault = () => {
   const loadFilesHistory = () => {
     fileService.getByUserId().then(file => {
     setFiles(file.data)
-      localStorage.setItem("files", file.data)
+      sessionStorage.setItem("files", file.data)
     })
   }
 

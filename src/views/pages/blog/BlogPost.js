@@ -53,7 +53,7 @@ class BlogPost extends React.Component {
       idPost: this.state.post.id
     }).then(() => {
       this.commentcontent = ""
-      this.loadPost();
+      //this.loadPost();
     });
   }
 
@@ -196,7 +196,7 @@ class BlogPost extends React.Component {
     }else if (this.state.post) {
 
       PostContent = (
-        <h4 className="mb-3">
+        <h4 className="mb-2">
         {this.state.post.content}
       </h4>
       )
@@ -419,7 +419,7 @@ class BlogPost extends React.Component {
          </Button>
         )
         Post = (
-          <Card body>
+          <Card body className="mb-1">
             <Row className="g-0 justify-content-end">
             <Col className="sw-8 d-inline-block position-relative p-0" xs="2">
             {postavatarfilter}
@@ -452,8 +452,8 @@ class BlogPost extends React.Component {
 
       else if(this.state.post && this.state.post.locked == false) {
         Post = (
-        <Card body>
-          <Row className="g-0 justify-content-end">
+        <Card body className="mb-1">
+          <Row className=" justify-content-end">
           <Col className="sw-8 d-inline-block position-relative me-3" xs="2">
               <img src={"/img/profile/"+this.state.userprofile.avatar} width="75" className="img-fluid rounded-xl" alt="thumb" />
               </Col>
@@ -487,10 +487,10 @@ class BlogPost extends React.Component {
      }
     }
      if (this.state.post && this.state.post.locked == false) {
-      CommentEdit = <Comment idPost={this.state.post.id} onCommentCreated={() => this.loadPost()} />
+      CommentEdit = <Comment className="mt-2" idPost={this.state.post.id} onCommentCreated={() => this.loadPost()} />
       for( let index in this.state.post?.comments){
         const comment = this.state.post?.comments[index];
-        const jdate = new Date(comment.commentedAt)
+        const jdate = new Date(comment?.commentedAt)
         const date = jdate.toLocaleDateString();
         const time = jdate.toLocaleTimeString().slice(0, 5);
         const ampm = jdate.toLocaleTimeString().slice(8, 10);
@@ -516,9 +516,6 @@ class BlogPost extends React.Component {
           editedcomm = "edited"
         }
 
-        if(this.state.post) {
-          CommentEdit = <Comment idPost={this.state.post.id}/>
-        }
         if(this.state.post && this.state.onEditComment) { 
           CommentEdit = (
           <UpdateComment id={comment.id} commentcontent={comment.commentcontent} onCreated={() => this.loadPost()}/>
@@ -542,7 +539,7 @@ class BlogPost extends React.Component {
           if(comment.idUser == connected.id || connected.role == "ADMIN"){
 
           list.push((
-            <Card body className=" mb-5">
+            <Card body className="mb-1">
                <Row className="g-0 justify-content-end">
                <Col xs="auto">
                  <ul  style={{listStyleType: 'none'}}>
@@ -568,7 +565,7 @@ class BlogPost extends React.Component {
           }}else if(comment.locked == false) {
 
           list.push((
-            <Card body className="mb-5">
+            <Card body className="mb-1">
                <Row className="g-0 justify-content-end">
                <Col xs="auto">
                  <ul  style={{listStyleType: 'none'}}>
@@ -614,7 +611,7 @@ class BlogPost extends React.Component {
           </div>
               <ul/>
               <Row className="g-5">
-        <Col xl="8" xxl="9" className="mb-5"></Col>
+        <Col xl="8" xxl="9" className="mb-1"></Col>
         { list }
          </Row>
 

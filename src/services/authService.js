@@ -18,7 +18,6 @@ const setCurrentUser = (user) => {
 
 const getCurrentUser = () => {
   return StorageService.getObject("AuthenticatedUser");
-  
 };
 
 const login = (email, password) => {
@@ -58,7 +57,7 @@ const verifyPassword = (pwd) => {
     {
       headers: {
         token : user.token
-      }
+    }
     }
   );
 }
@@ -85,9 +84,8 @@ const resetPassword = (email) => {
 };
 
 const logout = () => {
-    window.localStorage.clear();
+    window.sessionStorage.clear();
   };
-
 
 const isUserLoggedIn = () => {
     const user = getCurrentUser();

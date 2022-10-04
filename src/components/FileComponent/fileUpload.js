@@ -24,6 +24,12 @@ class UploadFiles extends Component {
       })
     }
     
+    clearFile = () => {
+      this.setState({
+        selectedFile : null
+      })
+    }
+
     onFileUpload = () => {
       if (!this.state.selectedFile) {
         console.log( "No file selected")
@@ -48,6 +54,7 @@ class UploadFiles extends Component {
       })
       .then(() => {
         this.props.onClick()
+        this.clearFile()
       });
     };
 

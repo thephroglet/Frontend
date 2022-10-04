@@ -25,7 +25,7 @@ class Blog extends React.Component {
         ],
       posts: [],
       userprofile: null,
-      Avatar : UserService.getProfileData() != null && UserService.getProfileData().avatar != undefined ? UserService.getProfileData().avatar : "29.png",    
+      Avatar : UserService.getProfileData() != null && UserService.getProfileData()?.avatar != undefined ? UserService.getProfileData()?.avatar : "29.png",    
       reportType: "",
       reportTargetId: "",
       showModal: false,
@@ -65,7 +65,6 @@ class Blog extends React.Component {
     })
   }
 
-
   reportPost(targetId) {
     this.setState({
       reportType:  "Post",
@@ -100,8 +99,6 @@ class Blog extends React.Component {
     
   title = 'Blog';
   description = 'Blog';
-
- 
 
   render() {
     const list = []

@@ -1,13 +1,19 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Button, Badge } from 'react-bootstrap';
 import classNames from 'classnames';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import { MENU_PLACEMENT } from 'constants.js';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
 import { fetchNotifications } from './notificationSlice';
+import { friendService } from 'services';
+import { now } from '@amcharts/amcharts5/.internal/core/util/Time';
+import { ref } from 'yup';
+
+let acceptFriendRequest = null;
+let denyFriendRequest = null;
 
 const NotificationsDropdownToggle = React.memo(
   React.forwardRef(({ onClick, expanded = false }, ref) => (
@@ -30,21 +36,67 @@ const NotificationsDropdownToggle = React.memo(
     </a>
   ))
 );
-const NotificationItem = ({ img = '', link = '', detail = '' }) => (
-  <li className="mb-3 pb-3 border-bottom border-separator-light d-flex">
-    <img src={img} className="me-3 sw-4 sh-4 rounded-xl align-self-center" alt="notification" />
-    <div className="align-self-center">
-      <NavLink to={link} activeClassName="">
-        {detail}
-      </NavLink>
+const NotificationItem = ({ item }) => {
+  console.log("ITEM - ", item);
+  const user = item.firstProfile === null ? item.secondProfile : item.firstProfile;
+  const jdate = new Date(item.createdAt);
+  const nowdate = new Date();
+  console.log("time now", nowdate)
+  const date = jdate.toLocaleDateString();
+  const time = jdate.toLocaleTimeString();
+  let refTimezone = null;
+  let timeDiff = nowdate.getTime() - jdate.getTime();
+  console.log("time diff", timeDiff)
+  let countDays = timeDiff / (1000 * 3600 * 24);
+  let countHours = countDays * 24;
+  let countMinutes = countHours * 60;
+  let singleDigitDate = countDays.toString().slice(0, 1);
+  let countTime = null
+
+  if(singleDigitDate < 1 && countHours >= 1 ){
+    refTimezone= "hours ago"
+    countTime= countHours.toString().slice(0, 2);
+  } else if (singleDigitDate == 1 && countHours == 0.000) {
+    refTimezone = "day ago"
+    countTime= countDays.toString().slice(0, 1);
+  } else if (countHours < 1){
+    refTimezone = "mins ago"
+    countTime= countMinutes.toString().slice(0, 2);
+  } else if (singleDigitDate > 2) {
+    refTimezone = "days ago"
+    countTime= countDays.toString().slice(0, 2);
+  }
+
+  console.log("count in days", countDays) 
+  return (
+  <li className="mb-3 mx-2 pb-3 border-bottom border-separator-light d-flex">
+    <img src={`/img/profile/${user.avatar}`} className="me-3 sw-4 sh-4 rounded-xl align-self-center" alt="thumb" />
+    <div body className="align-self-center">
+      <span>
+      <small>{ user.fname } { user.lname }  </small> <small className='text-muted'> - {countTime} {refTimezone}</small></span>
+     {/**<small>{ date } - { time }</small> */} 
+     <div>
+      <Badge bg="outline-success" size="sm" onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        acceptFriendRequest(item);
+      }}>Accept</Badge>
+      {' '}
+      <Badge siez="sm" bg="outline-danger" onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        denyFriendRequest(item);
+      }}>Deny</Badge>
+      </div>
     </div>
   </li>
-);
+  );
+}
 
 const NotificationsDropdownMenu = React.memo(
   React.forwardRef(({ style, className, labeledBy, items }, ref) => {
     return (
-      <div ref={ref} style={style} className={classNames('wide notification-dropdown scroll-out', className)} aria-labelledby={labeledBy}>
+      <div ref={ref} style={style} className={classNames('notification-dropdown scroll-out', className)} aria-labelledby={labeledBy}>
         <OverlayScrollbarsComponent
           options={{
             scrollbars: { autoHide: 'leave', autoHideDelay: 600 },
@@ -54,7 +106,7 @@ const NotificationsDropdownMenu = React.memo(
         >
           <ul className="list-unstyled border-last-none">
             {items.map((item, itemIndex) => (
-              <NotificationItem key={`notificationItem.${itemIndex}`} detail={item.detail} link={item.link} img={item.img} />
+              <NotificationItem key={`notificationItem.${itemIndex}`} item={item} />
             ))}
           </ul>
         </OverlayScrollbarsComponent>
@@ -77,6 +129,20 @@ const Notifications = () => {
   const { color } = useSelector((state) => state.settings);
   const { items } = useSelector((state) => state.notification);
   const { showingNavMenu } = useSelector((state) => state.layout);
+
+  acceptFriendRequest = (item) => {
+    friendService.AcceptFriendRequest(item)
+      .then(() => {
+        dispatch(fetchNotifications());
+      });
+  }
+  
+  denyFriendRequest = (item) => {
+    friendService.CancelFriendFromList(item)
+    .then(() => {
+      dispatch(fetchNotifications());
+    });
+  }
 
   useEffect(() => {
     dispatch(fetchNotifications());

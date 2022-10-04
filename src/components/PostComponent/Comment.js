@@ -16,12 +16,14 @@ class Comment extends Component {
     }
  
     onContentChange = event => {
+      event.preventDefault()
       this.setState({
         commentcontent: event.target.value
       });
     }
   
-    onComment = () => {
+    onComment = (event) => {
+      event.preventDefault();
       blogService.addComment({
         commentcontent: this.state.commentcontent,
         idUser: authService.getCurrentUser().id,
@@ -42,11 +44,11 @@ class Comment extends Component {
           </div>
         </Col>
     <Col>
-    <Form onSubmit={(event) => this.onSubmit(event)} >
+    <Form onSubmit={(event) => this.onContentChange(event)} >
       {/* <Form onSubmit={(e) => e.preventDefault()}>*/}  
         <NavLink to="#">{authService.getCurrentUser()?.firstname + " " + authService.getCurrentUser()?.lastname}</NavLink>
           <Form.Control as="textarea" placeholder ="Share your opinion..." value={this.state.commentcontent} onChange={this.onContentChange} />
-          <Button className="mt-2" size="sm" type="submit" onClick={() => this.onComment()}>COMMENT</Button>
+          <Button className="mt-2" size="sm" type="submit" onClick={(event) => this.onComment(event)}>COMMENT</Button>
       </Form>
       </Col>
       </Row>
